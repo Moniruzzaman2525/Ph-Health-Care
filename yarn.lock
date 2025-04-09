@@ -152,6 +152,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@prisma/client@^6.6.0":
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-6.6.0.tgz#21e8cf507091b6cffc8453970f782cb6adef0004"
+  integrity sha512-vfp73YT/BHsWWOAuthKQ/1lBgESSqYqAWZEYyTdGXyFAHpmewwWL2Iz6ErIzkj4aHbuc6/cGSsE6ZY+pBO04Cg==
+
 "@prisma/config@6.6.0":
   version "6.6.0"
   resolved "https://registry.yarnpkg.com/@prisma/config/-/config-6.6.0.tgz#ad945b707f613d0abe3164cf2341a6b14eebf93e"
