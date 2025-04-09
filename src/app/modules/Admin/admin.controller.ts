@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { adminServices } from "./admin.services";
 
 
-const getAllAdminFromDb = async(req: Request, res: Response) => {
+const getAllAdminFromDb = async (req: Request, res: Response) => {
+
     try {
         const result = await adminServices.getAllAdminFromDb(req.query)
 
