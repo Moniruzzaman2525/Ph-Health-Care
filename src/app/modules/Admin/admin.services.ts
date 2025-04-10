@@ -1,19 +1,13 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { adminSearchableFields } from "./admin.constant";
 import { paginationHelper } from "../../../helpers/paginationHelper";
-
-
-const prisma = new PrismaClient()
-
-
+import prisma from "../../../helpers/prisma";
 
 
 const getAllAdminFromDb = async (params: any, options: any) => {
     const andConditions: Prisma.AdminWhereInput[] = []
-
     const { limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
     const { searchTerm, ...filterData } = params
-
 
     if (params.searchTerm) {
         andConditions.push({
