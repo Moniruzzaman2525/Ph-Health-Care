@@ -1,38 +1,17 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { adminSearchableFields } from "./admin.constant";
+import { paginationHelper } from "../../../helpers/paginationHelper";
 
 
 const prisma = new PrismaClient()
 
-const calculatePagination = (options: {
-    page?: number;
-    limit?: number;
-    sortBy?: string;
-    sortOrder?: string
-}) => {
 
-    const page = Number(options.page || 1)
-    const limit = Number(options.limit || 10)
-    const skip = (page - 1) * limit || 0
-
-    const sortBy = options.sortBy || 'createdAt'
-    const sortOrder = options.sortOrder || 'desc'
-
-    return {
-        page,
-        limit,
-        skip,
-        sortBy,
-        sortOrder
-    }
-
-}
 
 
 const getAllAdminFromDb = async (params: any, options: any) => {
     const andConditions: Prisma.AdminWhereInput[] = []
 
-    const {limit, skip, sortBy, sortOrder} = calculatePagination(options)
+    const { limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
     const { searchTerm, ...filterData } = params
 
 
