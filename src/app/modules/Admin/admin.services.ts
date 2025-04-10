@@ -4,9 +4,10 @@ import { adminSearchableFields } from "./admin.constant";
 
 const prisma = new PrismaClient()
 
-const getAllAdminFromDb = async (params: any) => {
+const getAllAdminFromDb = async (params: any, options: any) => {
     const andConditions: Prisma.AdminWhereInput[] = []
 
+    const {limit, page} = options
     const { searchTerm, ...filterData } = params
 
 
@@ -34,7 +35,9 @@ const getAllAdminFromDb = async (params: any) => {
     const whereConditions: Prisma.AdminWhereInput = { AND: andConditions }
 
     const result = await prisma.admin.findMany({
-        where: whereConditions
+        where: whereConditions,
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
     })
     return result
 }
