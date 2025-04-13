@@ -6,7 +6,7 @@ import prisma from "../../../helpers/prisma";
 
 const getAllAdminFromDb = async (params: any, options: any) => {
     const andConditions: Prisma.AdminWhereInput[] = []
-    const { limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
     const { searchTerm, ...filterData } = params
 
     if (params.searchTerm) {
@@ -38,7 +38,13 @@ const getAllAdminFromDb = async (params: any, options: any) => {
         take: limit,
         orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' }
     })
-    return result
+    return {
+        meta: {
+            page,
+            limit
+        },
+        data: result
+    }
 }
 
 
