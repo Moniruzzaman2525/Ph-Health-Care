@@ -59,7 +59,7 @@ const getByIdFromDb = async (id: string) => {
 }
 
 const updateFromDb = async (id: string, payload: Partial<Prisma.AdminUpdateInput>) => {
-   await prisma.admin.findUniqueOrThrow({
+    await prisma.admin.findUniqueOrThrow({
         where: {
             id
         }
@@ -73,15 +73,22 @@ const updateFromDb = async (id: string, payload: Partial<Prisma.AdminUpdateInput
     return result
 }
 const deleteFromDb = async (id: string) => {
-   await prisma.admin.findUniqueOrThrow({
+    await prisma.admin.findUniqueOrThrow({
         where: {
             id
         }
     })
-    const result = await prisma.admin.delete({
-        where: {
-            id
-        }
+    const result = await prisma.$transaction(async (transactionClient) => {
+       const adminDeleteData = await transactionClient.admin.delete({
+           where: {
+               id
+           },
+       })
+       const userDeletedData = await transactionClient.user.delete({
+           where: {
+               email: adminDeleteData.email
+           }
+       })
     })
     return result
 }
