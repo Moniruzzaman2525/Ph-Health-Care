@@ -55,7 +55,8 @@ const getAllAdminFromDb = async (params: any, options: any) => {
 const getByIdFromDb = async (id: string) => {
     const result = await prisma.admin.findUnique({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     })
     return result
@@ -64,7 +65,8 @@ const getByIdFromDb = async (id: string) => {
 const updateFromDb = async (id: string, payload: Partial<Prisma.AdminUpdateInput>) => {
     await prisma.admin.findUniqueOrThrow({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     })
     const result = await prisma.admin.update({
@@ -78,7 +80,8 @@ const updateFromDb = async (id: string, payload: Partial<Prisma.AdminUpdateInput
 const deleteFromDb = async (id: string) => {
     await prisma.admin.findUniqueOrThrow({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     })
     const result = await prisma.$transaction(async (transactionClient) => {
