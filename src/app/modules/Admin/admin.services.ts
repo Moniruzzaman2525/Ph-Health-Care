@@ -89,6 +89,8 @@ const deleteFromDb = async (id: string) => {
                email: adminDeleteData.email
            }
        })
+
+        return adminDeleteData
     })
     return result
 }
