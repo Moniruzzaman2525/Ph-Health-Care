@@ -1,36 +1,39 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { adminServices } from "./admin.services";
 import { pick } from "../../../shared/pick";
 import { adminFilterableField } from "./admin.constant";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 
-
-const getAllAdminFromDb = async (req: Request, res: Response, next: NextFunction) => {
-
-    try {
-        const filter = pick(req.query, adminFilterableField)
-        const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
-        const result = await adminServices.getAllAdminFromDb(filter, options)
-
-        sendResponse(res, {
-            statusCode: httpStatus.OK,
-            success: true,
-            message: "Admin fetched successfully",
-            data: result.data,
-            meta: {
-                page: result.meta.page,
-                limit: result.meta.limit,
-                total: result.meta.total
-            }
-        })
-
-    } catch (error) {
-        next(error)
+const catchAsync = (fn: RequestHandler) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            await fn(req, res, next)
+        } catch (error) {
+            next(error)
+        }
     }
 }
 
-const getByIdFromDb = async (req: Request, res: Response, next: NextFunction) => {
+const getAllAdminFromDb: RequestHandler = catchAsync(async (req, res, next) => {
+    const filter = pick(req.query, adminFilterableField)
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
+    const result = await adminServices.getAllAdminFromDb(filter, options)
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Admin fetched successfully",
+        data: result.data,
+        meta: {
+            page: result.meta.page,
+            limit: result.meta.limit,
+            total: result.meta.total
+        }
+    })
+})
+
+const getByIdFromDb: RequestHandler = async (req, res, next) => {
     try {
         const { id } = req.params
         const result = await adminServices.getByIdFromDb(id)
@@ -47,7 +50,7 @@ const getByIdFromDb = async (req: Request, res: Response, next: NextFunction) =>
     }
 }
 
-const updateFromDb = async (req: Request, res: Response, next: NextFunction) => {
+const updateFromDb: RequestHandler = async (req, res, next) => {
     try {
 
         const id = req.params.id
@@ -69,7 +72,7 @@ const updateFromDb = async (req: Request, res: Response, next: NextFunction) => 
 
 
 
-const deleteFromDb = async (req: Request, res: Response, next: NextFunction) => {
+const deleteFromDb: RequestHandler = async (req, res, next) => {
     try {
 
         const id = req.params.id
@@ -86,7 +89,7 @@ const deleteFromDb = async (req: Request, res: Response, next: NextFunction) => 
        next(error)
     }
 }
-const softDeleteFromDb = async (req: Request, res: Response, next: NextFunction) => {
+const softDeleteFromDb: RequestHandler = async (req, res, next) => {
     try {
 
         const id = req.params.id
