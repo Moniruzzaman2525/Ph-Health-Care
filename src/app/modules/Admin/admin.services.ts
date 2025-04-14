@@ -59,6 +59,11 @@ const getByIdFromDb = async (id: string) => {
 }
 
 const updateFromDb = async (id: string, payload: Partial<Prisma.AdminUpdateInput>) => {
+    const isExist = await prisma.admin.findUniqueOrThrow({
+        where: {
+            id
+        }
+    })
     const result = await prisma.admin.update({
         where: {
             id
