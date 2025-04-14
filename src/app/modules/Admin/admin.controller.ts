@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { adminServices } from "./admin.services";
 import { pick } from "../../../shared/pick";
 import { adminFilterableField } from "./admin.constant";
@@ -6,7 +6,7 @@ import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 
 
-const getAllAdminFromDb = async (req: Request, res: Response) => {
+const getAllAdminFromDb = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const filter = pick(req.query, adminFilterableField)
@@ -26,16 +26,11 @@ const getAllAdminFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to get admin",
-            data: null
-        })
+        next(error)
     }
 }
 
-const getByIdFromDb = async (req: Request, res: Response) => {
+const getByIdFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params
         const result = await adminServices.getByIdFromDb(id)
@@ -48,16 +43,11 @@ const getByIdFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-       sendResponse(res, {
-           statusCode: httpStatus.BAD_REQUEST,
-           success: false,
-           message: "Failed to get admin",
-           data: null
-       })
+       next(error)
     }
 }
 
-const updateFromDb = async (req: Request, res: Response) => {
+const updateFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const id = req.params.id
@@ -73,18 +63,13 @@ const updateFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to update admin",
-            data: null
-        })
+       next(error)
     }
 }
 
 
 
-const deleteFromDb = async (req: Request, res: Response) => {
+const deleteFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const id = req.params.id
@@ -98,15 +83,10 @@ const deleteFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to delete admin",
-            data: null
-        })
+       next(error)
     }
 }
-const softDeleteFromDb = async (req: Request, res: Response) => {
+const softDeleteFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const id = req.params.id
@@ -120,12 +100,7 @@ const softDeleteFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to delete admin",
-            data: null
-        })
+       next(error)
     }
 }
 
