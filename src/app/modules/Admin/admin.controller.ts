@@ -33,79 +33,56 @@ const getAllAdminFromDb: RequestHandler = catchAsync(async (req, res, next) => {
     })
 })
 
-const getByIdFromDb: RequestHandler = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        const result = await adminServices.getByIdFromDb(id)
+const getByIdFromDb: RequestHandler = catchAsync(async (req, res, next) => {
+    const { id } = req.params
+    const result = await adminServices.getByIdFromDb(id)
 
-        sendResponse(res, {
-            statusCode: httpStatus.OK,
-            success: true,
-            message: "Admin fetched successfully",
-            data: result
-        })
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Admin fetched successfully",
+        data: result
+    })
+})
 
-    } catch (error: any) {
-       next(error)
-    }
-}
+const updateFromDb: RequestHandler = catchAsync(async (req, res, next) => {
+    const id = req.params.id
+    const payload = req.body
 
-const updateFromDb: RequestHandler = async (req, res, next) => {
-    try {
+    const result = await adminServices.updateFromDb(id, payload)
 
-        const id = req.params.id
-        const payload = req.body
-
-        const result = await adminServices.updateFromDb(id, payload)
-
-        sendResponse(res, {
-            statusCode: httpStatus.OK,
-            success: true,
-            message: "Admin updated successfully",
-            data: result
-        })
-
-    } catch (error: any) {
-       next(error)
-    }
-}
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Admin updated successfully",
+        data: result
+    })
+})
 
 
 
-const deleteFromDb: RequestHandler = async (req, res, next) => {
-    try {
+const deleteFromDb: RequestHandler = catchAsync(async (req, res, next) => {
+    const id = req.params.id
+    const result = await adminServices.deleteFromDb(id)
 
-        const id = req.params.id
-        const result = await adminServices.deleteFromDb(id)
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Admin deleted successfully",
+        data: result
+    })
+})
+const softDeleteFromDb: RequestHandler = catchAsync(async (req, res, next) => {
+    const id = req.params.id
+    const result = await adminServices.softDeleteFromDb(id)
 
-        sendResponse(res, {
-            statusCode: httpStatus.OK,
-            success: true,
-            message: "Admin deleted successfully",
-            data: result
-        })
-
-    } catch (error: any) {
-       next(error)
-    }
-}
-const softDeleteFromDb: RequestHandler = async (req, res, next) => {
-    try {
-
-        const id = req.params.id
-        const result = await adminServices.softDeleteFromDb(id)
-
-        sendResponse(res, {
-            statusCode: httpStatus.OK,
-            success: true,
-            message: "Admin deleted successfully",
-            data: result
-        })
-
-    } catch (error: any) {
-       next(error)
-    }
-}
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Admin deleted successfully",
+        data: result
+    })
+})
 
 export const adminController = {
     getAllAdminFromDb,
