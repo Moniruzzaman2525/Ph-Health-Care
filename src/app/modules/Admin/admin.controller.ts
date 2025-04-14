@@ -22,6 +22,7 @@ const getAllAdminFromDb = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: "Failed to get admin",
+            error: error
         })
     }
 }
@@ -41,6 +42,7 @@ const getByIdFromDb = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: "Failed to get admin",
+            error: error
         })
     }
 }
@@ -63,6 +65,7 @@ const updateFromDb = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: error?.name || "Failed to update admin",
+            error: error
         })
     }
 }
@@ -85,6 +88,27 @@ const deleteFromDb = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: error?.name || "Failed to delete admin",
+            error: error
+        })
+    }
+}
+const softDeleteFromDb = async (req: Request, res: Response) => {
+    try {
+
+        const id = req.params.id
+        const result = await adminServices.softDeleteFromDb(id)
+
+        res.status(200).json({
+            success: true,
+            message: "Admin deleted successfully",
+            data: result
+        })
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error?.name || "Failed to delete admin",
+            error: error
         })
     }
 }
@@ -93,5 +117,6 @@ export const adminController = {
     getAllAdminFromDb,
     getByIdFromDb,
     updateFromDb,
-    deleteFromDb
+    deleteFromDb,
+    softDeleteFromDb
 }
