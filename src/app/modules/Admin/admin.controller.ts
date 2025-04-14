@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { adminServices } from "./admin.services";
 import { pick } from "../../../shared/pick";
 import { adminFilterableField } from "./admin.constant";
@@ -57,7 +57,7 @@ const getByIdFromDb = async (req: Request, res: Response) => {
     }
 }
 
-const updateFromDb = async (req: Request, res: Response) => {
+const updateFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const id = req.params.id
@@ -73,12 +73,7 @@ const updateFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to update admin",
-            data: null
-        })
+       next(error)
     }
 }
 
