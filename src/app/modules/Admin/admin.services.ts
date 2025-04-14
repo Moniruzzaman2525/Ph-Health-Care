@@ -29,6 +29,9 @@ const getAllAdminFromDb = async (params: any, options: any) => {
             }))
         })
     }
+    andConditions.push({
+        isDeleted: false
+    })
 
     const whereConditions: Prisma.AdminWhereInput = { AND: andConditions }
 
