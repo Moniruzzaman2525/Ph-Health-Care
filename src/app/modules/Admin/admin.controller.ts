@@ -37,7 +37,7 @@ const getByIdFromDb = async (req: Request, res: Response) => {
             data: result
         })
 
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({
             success: false,
             message: "Failed to get admin",
@@ -45,7 +45,31 @@ const getByIdFromDb = async (req: Request, res: Response) => {
     }
 }
 
+const updateFromDb = async (req: Request, res: Response) => {
+    try {
+
+        const id = req.params.id
+        const payload = req.body
+
+        const result = await adminServices.updateFromDb(id, payload)
+
+        res.status(200).json({
+            success: true,
+            message: "Admin updated successfully",
+            data: result
+        })
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error?.name || "Failed to update admin",
+        })
+    }
+}
+
 
 export const adminController = {
-    getAllAdminFromDb
+    getAllAdminFromDb,
+    getByIdFromDb,
+    updateFromDb
 }
