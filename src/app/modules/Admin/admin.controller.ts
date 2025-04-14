@@ -6,7 +6,7 @@ import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 
 
-const getAllAdminFromDb = async (req: Request, res: Response) => {
+const getAllAdminFromDb = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const filter = pick(req.query, adminFilterableField)
@@ -26,16 +26,11 @@ const getAllAdminFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to get admin",
-            data: null
-        })
+        next(error)
     }
 }
 
-const getByIdFromDb = async (req: Request, res: Response) => {
+const getByIdFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params
         const result = await adminServices.getByIdFromDb(id)
@@ -48,12 +43,7 @@ const getByIdFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-       sendResponse(res, {
-           statusCode: httpStatus.BAD_REQUEST,
-           success: false,
-           message: "Failed to get admin",
-           data: null
-       })
+       next(error)
     }
 }
 
@@ -79,7 +69,7 @@ const updateFromDb = async (req: Request, res: Response, next: NextFunction) => 
 
 
 
-const deleteFromDb = async (req: Request, res: Response) => {
+const deleteFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const id = req.params.id
@@ -93,15 +83,10 @@ const deleteFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to delete admin",
-            data: null
-        })
+       next(error)
     }
 }
-const softDeleteFromDb = async (req: Request, res: Response) => {
+const softDeleteFromDb = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const id = req.params.id
@@ -115,12 +100,7 @@ const softDeleteFromDb = async (req: Request, res: Response) => {
         })
 
     } catch (error: any) {
-        sendResponse(res, {
-            statusCode: httpStatus.BAD_REQUEST,
-            success: false,
-            message: "Failed to delete admin",
-            data: null
-        })
+       next(error)
     }
 }
 
