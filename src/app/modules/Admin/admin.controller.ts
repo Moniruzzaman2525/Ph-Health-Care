@@ -3,6 +3,24 @@ import { adminServices } from "./admin.services";
 import { pick } from "../../../shared/pick";
 import { adminFilterableField } from "./admin.constant";
 
+const sendResponse = <T>(res: Response, jsonData: {
+    statusCode: number,
+    success: boolean,
+    message: string,
+    data: T | null | undefined,
+    meta?: {
+        page: number,
+        limit: number,
+        total: number
+    }
+}) => {
+    res.status(200).json({
+        success: jsonData.success,
+        message: jsonData.message,
+        meta: jsonData.meta || null || undefined,
+        data: jsonData.data || null || undefined
+    })
+}
 
 const getAllAdminFromDb = async (req: Request, res: Response) => {
 
@@ -11,18 +29,24 @@ const getAllAdminFromDb = async (req: Request, res: Response) => {
         const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
         const result = await adminServices.getAllAdminFromDb(filter, options)
 
-        res.status(200).json({
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             message: "Admin fetched successfully",
-            meta: result.meta,
-            data: result.data
+            data: result.data,
+            meta: {
+                page: result.meta.page,
+                limit: result.meta.limit,
+                total: result.meta.total
+            }
         })
 
     } catch (error) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
             success: false,
             message: "Failed to get admin",
-            error: error
+            data: null
         })
     }
 }
@@ -32,7 +56,8 @@ const getByIdFromDb = async (req: Request, res: Response) => {
         const { id } = req.params
         const result = await adminServices.getByIdFromDb(id)
 
-        res.status(200).json({
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             message: "Admin fetched successfully",
             data: result
@@ -41,7 +66,7 @@ const getByIdFromDb = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: "Failed to get admin",
+            message: error?.name || "Failed to get admin",
             error: error
         })
     }
@@ -55,17 +80,19 @@ const updateFromDb = async (req: Request, res: Response) => {
 
         const result = await adminServices.updateFromDb(id, payload)
 
-        res.status(200).json({
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             message: "Admin updated successfully",
             data: result
         })
 
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
             success: false,
-            message: error?.name || "Failed to update admin",
-            error: error
+            message: "Failed to update admin",
+            data: null
         })
     }
 }
@@ -78,17 +105,19 @@ const deleteFromDb = async (req: Request, res: Response) => {
         const id = req.params.id
         const result = await adminServices.deleteFromDb(id)
 
-        res.status(200).json({
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             message: "Admin deleted successfully",
             data: result
         })
 
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
             success: false,
-            message: error?.name || "Failed to delete admin",
-            error: error
+            message: "Failed to delete admin",
+            data: null
         })
     }
 }
@@ -98,17 +127,19 @@ const softDeleteFromDb = async (req: Request, res: Response) => {
         const id = req.params.id
         const result = await adminServices.softDeleteFromDb(id)
 
-        res.status(200).json({
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             message: "Admin deleted successfully",
             data: result
         })
 
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
             success: false,
-            message: error?.name || "Failed to delete admin",
-            error: error
+            message: "Failed to delete admin",
+            data: null
         })
     }
 }
