@@ -1,18 +1,53 @@
 import prisma from "../../../helpers/prisma"
 import * as bcrypt from "bcrypt"
-
-const loginUser = async (data: {
+import { access } from "fs"
+import jwt from "jsonwebtoken"
+const loginUser = async (payload: {
     email: string,
     password: string
 }) => {
 
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
-            email: data.email
+            email: payload.email
         }
     })
-    const isCorrectPassword = await bcrypt.compare(data.password, userData.password)
-    return userData
+    const isCorrectPassword: boolean = await bcrypt.compare(payload.password, userData.password)
+
+    if (!isCorrectPassword) {
+        throw new Error("Invalid password")
+    }
+
+
+    const accessToken = jwt.sign({
+        email: userData.email,
+        role: userData.role,
+        id: userData.id
+        },
+            'secret',
+        {
+                algorithm: 'HS256',
+                expiresIn: '1d'
+            }
+        )
+
+    const refreshToken = jwt.sign({
+        email: userData.email,
+        role: userData.role,
+        id: userData.id
+        },
+            'secretRefreshToken',
+        {
+                algorithm: 'HS256',
+                expiresIn: '30'
+            }
+        )
+
+
+    return {
+        accessToken,
+        needPasswordChange: userData.needPasswordChange
+    }
 }
 
 
