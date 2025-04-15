@@ -1,4 +1,4 @@
-import { generateToken } from "../../../helpers/jwtHelpers"
+import { jwtHelpers } from "../../../helpers/jwtHelpers"
 import prisma from "../../../helpers/prisma"
 import * as bcrypt from "bcrypt"
 
@@ -19,13 +19,13 @@ const loginUser = async (payload: {
     }
 
 
-    const accessToken = generateToken({
+    const accessToken = jwtHelpers.generateToken({
         email: userData.email,
         role: userData.role,
         id: userData.id
     }, 'secretToken', 5)
 
-    const refreshToken = generateToken({
+    const refreshToken = jwtHelpers.generateToken({
         email: userData.email,
         role: userData.role,
         id: userData.id
@@ -38,7 +38,11 @@ const loginUser = async (payload: {
     }
 }
 
+const refreshToken = async (token: string) => {
+
+}
 
 export const authServices = {
-    loginUser
+    loginUser,
+    refreshToken
 }
