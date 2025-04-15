@@ -1,5 +1,5 @@
 import prisma from "../../../helpers/prisma"
-
+import * as bcrypt from "bcrypt"
 
 const loginUser = async (data: {
     email: string,
@@ -11,6 +11,7 @@ const loginUser = async (data: {
             email: data.email
         }
     })
+    const isCorrectPassword = await bcrypt.compare(data.password, userData.password)
     return userData
 }
 
