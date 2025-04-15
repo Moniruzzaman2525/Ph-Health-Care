@@ -23,7 +23,7 @@ const loginUser = async (payload: {
         email: userData.email,
         role: userData.role,
         id: userData.id
-    }, 'secretToken', 5)
+    }, 'accessToken', 5)
 
     const refreshToken = jwtHelpers.generateToken({
         email: userData.email,
@@ -39,7 +39,27 @@ const loginUser = async (payload: {
 }
 
 const refreshToken = async (token: string) => {
+    let decodedData
+   try {
+       decodedData = jwtHelpers.verifyToken(token, 'secretToken')
 
+       const userData = await prisma.user.findUniqueOrThrow({
+           where: {
+               email: decodedData.email
+           }
+       })
+       const accessToken = jwtHelpers.generateToken({
+           email: userData.email,
+           role: userData.role,
+           id: userData.id
+       }, 'accessToken', 5)
+       return {
+           accessToken,
+           needPasswordChange: userData.needPasswordChange
+       }
+   } catch (error) {
+    throw new Error("Your are not authorized")
+   }
 }
 
 export const authServices = {
