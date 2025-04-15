@@ -1,16 +1,6 @@
+import { generateToken } from "../../../helpers/jwtHelpers"
 import prisma from "../../../helpers/prisma"
 import * as bcrypt from "bcrypt"
-import { access } from "fs"
-import jwt from "jsonwebtoken"
-
-
-const generateToken = (payload: any, secret: string, expiresIn: number) => {
-    const token = jwt.sign(payload, secret, {
-        algorithm: 'HS256',
-        expiresIn: expiresIn
-    })
-    return token
-}
 
 const loginUser = async (payload: {
     email: string,
