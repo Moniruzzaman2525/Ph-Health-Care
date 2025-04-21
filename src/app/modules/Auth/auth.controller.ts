@@ -31,7 +31,7 @@ const refreshToken = catchAsync(async (req: Request, res: Response, next: NextFu
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "User logged in successfully",
+        message: "Access token generated successfully",
         data: {
             accessToken: result.accessToken,
             needPasswordChange: result.needPasswordChange

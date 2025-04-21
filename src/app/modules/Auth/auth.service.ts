@@ -3,6 +3,7 @@ import config from "../../../config"
 import { jwtHelpers } from "../../../helpers/jwtHelpers"
 import prisma from "../../../helpers/prisma"
 import * as bcrypt from "bcrypt"
+import { UserStatus } from "@prisma/client"
 
 const loginUser = async (payload: {
     email: string,
@@ -71,7 +72,8 @@ const refreshToken = async (token: string) => {
 const changePassword = async (user: any, payload: any) => {
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
-            email: user.email
+            email: user.email,
+            status: UserStatus.ACTIVE
         }
     })
     const isCorrectPassword: boolean = await bcrypt.compare(payload.oldPassword, userData.password)
