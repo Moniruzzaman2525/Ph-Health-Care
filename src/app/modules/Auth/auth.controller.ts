@@ -32,11 +32,10 @@ const refreshToken = catchAsync(async (req: Request, res: Response, next: NextFu
         statusCode: httpStatus.OK,
         success: true,
         message: "User logged in successfully",
-        data: result
-        // data: {
-        //     accessToken: result.accessToken,
-        //     needPasswordChange: result.needPasswordChange
-        // }
+        data: {
+            accessToken: result.accessToken,
+            needPasswordChange: result.needPasswordChange
+        }
     })
 })
 
