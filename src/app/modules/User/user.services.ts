@@ -10,6 +10,7 @@ const createAdmin = async (req: any) => {
     const file = req.file
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file)
+        req.body.data.admin.profilePhoto = uploadToCloudinary?.secure_url
     }
 
 //     const hashPassword: string = await bcrypt.hash(data.password, 12)
