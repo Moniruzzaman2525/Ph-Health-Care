@@ -3,11 +3,12 @@ import { UserRole } from "@prisma/client"
 import * as bcrypt from "bcrypt"
 import prisma from "../../../helpers/prisma"
 import { fileUploader } from "../../../helpers/fileUploader"
+import { IFile } from "../../interfaces/file"
 
 
 const createAdmin = async (req: any) => {
 
-    const file = req.file
+    const file: IFile = req.file
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file)
         req.body.data.admin.profilePhoto = uploadToCloudinary?.secure_url
