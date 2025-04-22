@@ -4,6 +4,7 @@ import { jwtHelpers } from "../../../helpers/jwtHelpers"
 import prisma from "../../../helpers/prisma"
 import * as bcrypt from "bcrypt"
 import { UserStatus } from "@prisma/client"
+import emailSender from "./emailSender"
 
 const loginUser = async (payload: {
     email: string,
@@ -108,7 +109,20 @@ const forgotPassword = async (payload: {email: string}) => {
     })
     const resetPasswordExpireIn = Number(config.jwt.reset_password_token_expire_in)
     const resetPassToken = jwtHelpers.generateToken({ email: userData.email, role: userData.role }, config.jwt.reset_password_secret as Secret, resetPasswordExpireIn)
-    return 
+    const resetPasswordLink = config.jwt.reset_password_link + `?email=${userData.email}&token=${resetPassToken}`
+    await emailSender(
+        userData.email,
+        `
+        <div>
+            <p>Dear User,</p>
+            <p>Your password reset link
+                <a href={${resetPasswordLink}}>
+                    <button>Reset Password</button>
+                </a>
+            </p>
+        </div>
+        `
+    )
 }
 
 export const authServices = {
