@@ -97,11 +97,15 @@ const changePassword = async (user: any, payload: any) => {
         message: 'Password changes successfully'
     }
 
+}
+
+const forgotPassword = async () => {
 
 }
 
 export const authServices = {
     loginUser,
     refreshToken,
-    changePassword
+    changePassword,
+    forgotPassword
 }
