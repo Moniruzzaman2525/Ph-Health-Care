@@ -17,3 +17,6 @@ const createAdmin = z.object({
     })
 })
 
+export const userValidationSchemas = {
+    createAdmin
+}
