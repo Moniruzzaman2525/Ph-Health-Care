@@ -13,25 +13,27 @@ const createAdmin = async (req: any) => {
         req.body.data.admin.profilePhoto = uploadToCloudinary?.secure_url
     }
 
-//     const hashPassword: string = await bcrypt.hash(data.password, 12)
 
-//     const userData = {
-//         email: data.admin.email,
-//         password: hashPassword,
-//         role: UserRole.ADMIN
-//     }
 
-//     const result = await prisma.$transaction(async (transactionClient) => {
-//          await transactionClient.user.create({
-//             data: userData
-//         })
-//         const createAdminData = await transactionClient.admin.create({
-//             data: data.admin
-//         })
-//         return createAdminData
-//     })
+    const hashPassword: string = await bcrypt.hash(req.body.password, 12)
 
-//     return result
+    const userData = {
+        email: req.body.admin.email,
+        password: hashPassword,
+        role: UserRole.ADMIN
+    }
+
+    const result = await prisma.$transaction(async (transactionClient) => {
+         await transactionClient.user.create({
+            data: userData
+        })
+        const createAdminData = await transactionClient.admin.create({
+            data: req.body.admin
+        })
+        return createAdminData
+    })
+
+    return result
 }
 
 export const userServices = {
