@@ -141,6 +141,9 @@ const getAllUserFromDb = async (params: any, options: IPaginationOptions) => {
     }
 }
 
+
+
+
 export const userServices = {
     createAdmin,
     createDoctor,
