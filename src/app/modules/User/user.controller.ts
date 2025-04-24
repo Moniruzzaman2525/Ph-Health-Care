@@ -18,8 +18,7 @@ const createDoctor = catchAsync(async (req: Request, res: Response, next: NextFu
         message: "Doctor created successfully",
         data: result
     })
-}
-)
+})
 
 export const userController = {
     createAdmin,
