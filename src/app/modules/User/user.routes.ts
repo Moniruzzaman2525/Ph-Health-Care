@@ -22,7 +22,7 @@ router.post("/create-doctor", auth(UserRole.ADMIN, UserRole.SUPER_ADMIN), fileUp
     (req: Request, res: Response, next: NextFunction) => {
 
         req.body = userValidationSchemas.createDoctor.parse(JSON.parse(req.body.data))
-        return userController.createAdmin(req, res, next)
+        return userController.createDoctor(req, res, next)
     }
 )
 
