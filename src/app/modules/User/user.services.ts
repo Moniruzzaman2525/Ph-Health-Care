@@ -153,12 +153,15 @@ const getAllUserFromDb = async (params: any, options: IPaginationOptions) => {
     }
 }
 
-
+const changeProfileStatus = async (id: string, data: {status: UserRole}) => {
+    console.log(id)
+}
 
 
 export const userServices = {
     createAdmin,
     createDoctor,
     createPatient,
-    getAllUserFromDb
+    getAllUserFromDb,
+    changeProfileStatus
 }

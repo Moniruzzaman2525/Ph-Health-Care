@@ -31,7 +31,8 @@ const createPatient = catchAsync(async (req: Request, res: Response, next: NextF
     })
 })
 const changeProfileStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const result = await userServices.changeProfileStatus(req)
+    const id = req.params.id
+    const result = await userServices.changeProfileStatus(id, req.body)
     res.status(200).json({
         success: true,
         message: "Users Profile status updated successfully",
