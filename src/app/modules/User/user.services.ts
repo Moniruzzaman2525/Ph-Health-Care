@@ -10,7 +10,7 @@ import { paginationHelper } from "../../../helpers/paginationHelper"
 import { userSearchableFields } from "./userconstant"
 
 
-const createAdmin = async (req: Request) : Promise<Admin> => {
+const createAdmin = async (req: Request): Promise<Admin> => {
 
     const file = req.file as IFile | undefined
     if (file) {
@@ -27,7 +27,7 @@ const createAdmin = async (req: Request) : Promise<Admin> => {
     }
 
     const result = await prisma.$transaction(async (transactionClient) => {
-         await transactionClient.user.create({
+        await transactionClient.user.create({
             data: userData
         })
         const createAdminData = await transactionClient.admin.create({
@@ -38,9 +38,9 @@ const createAdmin = async (req: Request) : Promise<Admin> => {
 
     return result
 }
-const createDoctor = async (req: Request) : Promise<Doctor> => {
+const createDoctor = async (req: Request): Promise<Doctor> => {
 
-    const file  = req.file as IFile | undefined
+    const file = req.file as IFile | undefined
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file)
         req.body.data.doctor.profilePhoto = uploadToCloudinary?.secure_url
@@ -55,7 +55,7 @@ const createDoctor = async (req: Request) : Promise<Doctor> => {
     }
 
     const result = await prisma.$transaction(async (transactionClient) => {
-         await transactionClient.user.create({
+        await transactionClient.user.create({
             data: userData
         })
         const createAdminData = await transactionClient.doctor.create({
@@ -66,9 +66,9 @@ const createDoctor = async (req: Request) : Promise<Doctor> => {
 
     return result
 }
-const createPatient = async (req: Request) : Promise<Patient> => {
+const createPatient = async (req: Request): Promise<Patient> => {
 
-    const file  = req.file as IFile | undefined
+    const file = req.file as IFile | undefined
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file)
         req.body.data.patient.profilePhoto = uploadToCloudinary?.secure_url
@@ -83,7 +83,7 @@ const createPatient = async (req: Request) : Promise<Patient> => {
     }
 
     const result = await prisma.$transaction(async (transactionClient) => {
-         await transactionClient.user.create({
+        await transactionClient.user.create({
             data: userData
         })
         const createAdminData = await transactionClient.patient.create({
@@ -153,8 +153,20 @@ const getAllUserFromDb = async (params: any, options: IPaginationOptions) => {
     }
 }
 
-const changeProfileStatus = async (id: string, data: {status: UserRole}) => {
-    console.log(id)
+const changeProfileStatus = async (id: string, status: UserRole) => {
+    await prisma.user.findUniqueOrThrow({
+        where: {
+            id
+        }
+    })
+
+    const updateStatus = await prisma.user.update({
+        where: {
+            id
+        },
+        data: status
+    })
+    return updateStatus
 }
 
 
