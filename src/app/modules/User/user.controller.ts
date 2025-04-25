@@ -30,6 +30,15 @@ const createPatient = catchAsync(async (req: Request, res: Response, next: NextF
         data: result
     })
 })
+const getMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user
+    const result = await userServices.getMyProfile(user)
+    res.status(200).json({
+        success: true,
+        message: "My profile data fetched",
+        data: result
+    })
+})
 const changeProfileStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const result = await userServices.changeProfileStatus(id, req.body)
@@ -63,5 +72,6 @@ export const userController = {
     createDoctor,
     createPatient,
     getAllAdminFromDb,
-    changeProfileStatus
+    changeProfileStatus,
+    getMyProfile
 }
