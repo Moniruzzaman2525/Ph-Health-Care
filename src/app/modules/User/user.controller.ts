@@ -41,7 +41,7 @@ const getMyProfile = catchAsync(async (req: Request, res: Response, next: NextFu
 })
 const updateMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user
-    const result = await updateMyProfile.getMyProfile(user)
+    const result = await userServices.updateMyProfile(user, req.body)
     res.status(200).json({
         success: true,
         message: "My profile updated",

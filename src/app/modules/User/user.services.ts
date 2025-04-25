@@ -224,7 +224,7 @@ const getMyProfile = async (user: any) => {
 }
 
 
-const updateMyProfile = async () => {
+const updateMyProfile = async (user: any, payload: any) => {
 
 }
 
