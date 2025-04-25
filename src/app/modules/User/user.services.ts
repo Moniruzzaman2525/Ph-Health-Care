@@ -175,6 +175,15 @@ const getMyProfile = async (user: any) => {
     const userInfo = await prisma.user.findUnique({
         where: {
             email: user.email
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+            needPasswordChange: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true
         }
     })
 
@@ -210,10 +219,14 @@ const getMyProfile = async (user: any) => {
     }
 
 
-    return {...userInfo, ...profileInfo}
+    return { ...userInfo, ...profileInfo }
 
 }
 
+
+const updateMyProfile = async () => {
+
+}
 
 export const userServices = {
     createAdmin,
@@ -221,5 +234,6 @@ export const userServices = {
     createPatient,
     getAllUserFromDb,
     changeProfileStatus,
-    getMyProfile
+    getMyProfile,
+    updateMyProfile
 }
