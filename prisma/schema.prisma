@@ -46,7 +46,7 @@ model Admin {
 model Doctor {
   id                  String   @id @default(uuid())
   name                String
-  email               String @unique
+  email               String   @unique
   profilePhoto        String?
   contactNumber       String
   address             String?
@@ -79,6 +79,25 @@ model Patient {
   user User @relation(references: [email], fields: [email])
 
   @@map("patients")
+}
+
+model Specialties {
+  id                String              @id @default(uuid())
+  title             String
+  icon              String
+  DoctorSpecialties DoctorSpecialties[]
+
+  @@map("specialties")
+}
+
+model DoctorSpecialties {
+  specialtiesId String
+  specialties   Specialties @relation(fields: [specialtiesId], references: [id])
+
+  doctorId String
+
+  @@id([specialtiesId, doctorId])
+  @@map("doctor_specialties")
 }
 
 enum Gender {
