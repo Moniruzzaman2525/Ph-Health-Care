@@ -30,6 +30,15 @@ const createPatient = catchAsync(async (req: Request, res: Response, next: NextF
         data: result
     })
 })
+const changeProfileStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    const result = await userServices.changeProfileStatus(id, req.body)
+    res.status(200).json({
+        success: true,
+        message: "Users Profile status updated successfully",
+        data: result
+    })
+})
 
 const getAllAdminFromDb = catchAsync(async (req, res, next) => {
     const filter = pick(req.query, userFilterableField)
@@ -53,5 +62,6 @@ export const userController = {
     createAdmin,
     createDoctor,
     createPatient,
-    getAllAdminFromDb
+    getAllAdminFromDb,
+    changeProfileStatus
 }
