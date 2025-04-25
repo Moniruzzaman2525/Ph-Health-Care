@@ -1,5 +1,5 @@
 
-import { Admin, Doctor, Patient, Prisma, UserRole } from "@prisma/client"
+import { Admin, Doctor, Patient, Prisma, UserRole, UserStatus } from "@prisma/client"
 import * as bcrypt from "bcrypt"
 import prisma from "../../../helpers/prisma"
 import { fileUploader } from "../../../helpers/fileUploader"
@@ -174,7 +174,17 @@ const getMyProfile = async (user: any) => {
 
     const userInfo = await prisma.user.findUnique({
         where: {
-            email: user.email
+            email: user.email,
+            status: UserStatus.ACTIVE
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+            needPasswordChange: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true
         }
     })
 
@@ -210,10 +220,58 @@ const getMyProfile = async (user: any) => {
     }
 
 
-    return {...userInfo, ...profileInfo}
+    return { ...userInfo, ...profileInfo }
 
 }
 
+
+const updateMyProfile = async (user: any, payload: any) => {
+
+    const userInfo = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: payload.email,
+            status: UserStatus.ACTIVE
+        }
+    })
+    let profileInfo
+
+    if (userInfo?.role === UserRole.SUPER_ADMIN) {
+        profileInfo = await prisma.admin.update({
+            where: {
+                email: userInfo.email
+            },
+            data: payload
+        })
+    }
+    else if (userInfo?.role === UserRole.ADMIN) {
+        profileInfo = await prisma.admin.update({
+            where: {
+                email: userInfo.email
+            },
+            data: payload
+        })
+    }
+    else if (userInfo?.role === UserRole.DOCTOR) {
+        profileInfo = await prisma.doctor.update({
+            where: {
+                email: userInfo.email
+            },
+            data: payload
+        })
+    }
+    else if (userInfo?.role === UserRole.PATIENT) {
+        profileInfo = await prisma.patient.update({
+            where: {
+                email: userInfo.email
+            },
+            data: payload
+        })
+    }
+
+    return profileInfo
+
+
+}
 
 export const userServices = {
     createAdmin,
@@ -221,5 +279,6 @@ export const userServices = {
     createPatient,
     getAllUserFromDb,
     changeProfileStatus,
-    getMyProfile
+    getMyProfile,
+    updateMyProfile
 }
