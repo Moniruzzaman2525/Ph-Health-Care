@@ -225,14 +225,23 @@ const getMyProfile = async (user: any) => {
 }
 
 
-const updateMyProfile = async (user: any, payload: any) => {
+const updateMyProfile = async (user: any, req: Request) => {
 
     const userInfo = await prisma.user.findUniqueOrThrow({
         where: {
-            email: payload.email,
+            email: req.body.payload.email,
             status: UserStatus.ACTIVE
         }
     })
+
+    const file = req.file as IFile | undefined
+
+    if (file) {
+        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file)
+        req.body.data.profilePhoto = uploadToCloudinary?.secure_url
+    }
+
+
     let profileInfo
 
     if (userInfo?.role === UserRole.SUPER_ADMIN) {
@@ -240,7 +249,7 @@ const updateMyProfile = async (user: any, payload: any) => {
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
     else if (userInfo?.role === UserRole.ADMIN) {
@@ -248,7 +257,7 @@ const updateMyProfile = async (user: any, payload: any) => {
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
     else if (userInfo?.role === UserRole.DOCTOR) {
@@ -256,7 +265,7 @@ const updateMyProfile = async (user: any, payload: any) => {
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
     else if (userInfo?.role === UserRole.PATIENT) {
@@ -264,7 +273,7 @@ const updateMyProfile = async (user: any, payload: any) => {
             where: {
                 email: userInfo.email
             },
-            data: payload
+            data: req.body
         })
     }
 
