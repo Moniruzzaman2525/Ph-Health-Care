@@ -268,6 +268,8 @@ const updateMyProfile = async (user: any, payload: any) => {
         })
     }
 
+    return profileInfo
+
 
 }
 
