@@ -5,6 +5,7 @@ import { pick } from "../../../shared/pick";
 import { userFilterableField } from "./userconstant";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
+import { IAuthUser } from "../../interfaces/common";
 
 const createAdmin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await userServices.createAdmin(req)
@@ -30,27 +31,27 @@ const createPatient = catchAsync(async (req: Request, res: Response, next: NextF
         data: result
     })
 })
-const getMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const getMyProfile = catchAsync(async (req: Request & {user?: IAuthUser}, res: Response, next: NextFunction) => {
     const user = req.user
-    const result = await userServices.getMyProfile(user)
+    const result = await userServices.getMyProfile(user as IAuthUser)
     res.status(200).json({
         success: true,
         message: "My profile data fetched",
         data: result
     })
 })
-const updateMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user
-    const result = await userServices.updateMyProfile(user, req.body)
+const updateMyProfile = catchAsync(async (req: Request & {user?: IAuthUser}, res: Response, next: NextFunction) => {
+    const user = req.user as IAuthUser
+    const result = await userServices.updateMyProfile(user, req)
     res.status(200).json({
         success: true,
         message: "My profile updated",
         data: result
     })
 })
-const changeProfileStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const changeProfileStatus = catchAsync(async (req: Request , res: Response, next: NextFunction) => {
     const id = req.params.id
-    const result = await userServices.changeProfileStatus(id, req)
+    const result = await userServices.changeProfileStatus(id, req.body.status)
     res.status(200).json({
         success: true,
         message: "Users Profile status updated successfully",
