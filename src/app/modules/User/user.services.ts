@@ -170,10 +170,56 @@ const changeProfileStatus = async (id: string, status: UserRole) => {
 }
 
 
+const getMyProfile = async (user: any) => {
+
+    const userInfo = await prisma.user.findUnique({
+        where: {
+            email: user.email
+        }
+    })
+
+    let profileInfo
+
+    if (userInfo?.role === UserRole.SUPER_ADMIN) {
+        profileInfo = await prisma.admin.findUnique({
+            where: {
+                email: userInfo.email
+            }
+        })
+    }
+    else if (userInfo?.role === UserRole.ADMIN) {
+        profileInfo = await prisma.admin.findUnique({
+            where: {
+                email: userInfo.email
+            }
+        })
+    }
+    else if (userInfo?.role === UserRole.DOCTOR) {
+        profileInfo = await prisma.doctor.findUnique({
+            where: {
+                email: userInfo.email
+            }
+        })
+    }
+    else if (userInfo?.role === UserRole.PATIENT) {
+        profileInfo = await prisma.patient.findUnique({
+            where: {
+                email: userInfo.email
+            }
+        })
+    }
+
+
+    return {...userInfo, ...profileInfo}
+
+}
+
+
 export const userServices = {
     createAdmin,
     createDoctor,
     createPatient,
     getAllUserFromDb,
-    changeProfileStatus
+    changeProfileStatus,
+    getMyProfile
 }

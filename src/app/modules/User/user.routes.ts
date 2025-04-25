@@ -10,6 +10,7 @@ import { userValidationSchemas } from "./user.validation";
 const router = express.Router();
 
 router.get('/', auth(UserRole.ADMIN, UserRole.SUPER_ADMIN), userController.getAllAdminFromDb)
+router.get('/me', auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT), userController.getMyProfile)
 
 router.post("/create-admin", auth(UserRole.ADMIN, UserRole.SUPER_ADMIN), fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
@@ -34,5 +35,7 @@ router.post("/create-patient", fileUploader.upload.single('file'),
 )
 
 router.patch('/status/:id', auth(UserRole.ADMIN, UserRole.SUPER_ADMIN), userController.changeProfileStatus)
+
+
 
 export const UserRoutes = router
