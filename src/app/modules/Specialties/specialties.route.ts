@@ -15,3 +15,8 @@ router.post("/", fileUploader.upload.single('file'),
 )
 
 export const SpecialtiesRoute = router
+
+
+/* task */
+// data get
+// delete
