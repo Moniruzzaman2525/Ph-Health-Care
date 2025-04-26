@@ -78,8 +78,8 @@ model Patient {
   updatedAt     DateTime @updatedAt
 
   user              User               @relation(references: [email], fields: [email])
-  PatientHealthData PatientHealthData?
-  MedicalReport     MedicalReport[]
+  patientHealthData PatientHealthData?
+  medicalReport     MedicalReport[]
 
   @@map("patients")
 }
