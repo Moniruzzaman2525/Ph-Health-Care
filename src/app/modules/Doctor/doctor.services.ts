@@ -22,14 +22,32 @@ const updateIntoDb = async (id: string, payload: any) => {
             }
         })
 
-        for (const specialtiesId of specialties) {
-            const createDoctorSpecialties = await transactionClient.doctorSpecialties.create({
-                data: {
-                    doctorId: doctor.id,
-                    specialtiesId: specialtiesId
-                }
-            })
+        if (specialties && specialties.length > 0) {
+            // delete specialties
+            const deleteSpecialtiesId = specialties.filter((specialty: any) => specialty.isDelete)
+            for (const specialty of deleteSpecialtiesId) {
+                const createDoctorSpecialties = await transactionClient.doctorSpecialties.deleteMany({
+                    where: {
+                        doctorId: doctor.id,
+                        specialtiesId: specialty.specialtiesId
+                   }
+                })
+            }
+
+            // create specialties
+            const createSpecialtiesId = specialties.filter((specialty: any) => !specialty.isDelete)
+            for (const specialty of createSpecialtiesId) {
+                const createDoctorSpecialties = await transactionClient.doctorSpecialties.create({
+                    data: {
+                        doctorId: doctor.id,
+                        specialtiesId: specialty.specialtiesId
+                    }
+                })
+            }
         }
+
+
+
 
         return updateDoctorData
     })
