@@ -125,8 +125,13 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
         }
     })
 
+    const responseData = await prisma.patient.findUnique({
+        where: {
+            id: patientInfo.id
+        }
+    })
 
-    return null
+    return responseData
 
 };
 
