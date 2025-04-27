@@ -118,6 +118,11 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
                 create: { ...patientHealthData, patientId: patientInfo.id }
             })
         }
+        if (medicalReport) {
+            const report = await transactionClient.medicalReport.create({
+                data: {...medicalReport, patientId: patientInfo.id}
+            })
+        }
     })
 
 
