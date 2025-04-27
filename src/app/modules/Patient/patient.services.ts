@@ -90,55 +90,23 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
 
     const { patientHealthData, medicalReport, ...patientData } = payload;
 
-    const patientInfo = await prisma.patient.findUniqueOrThrow({
+    const patientInfo = await prisma.patient.findFirstOrThrow({
         where: {
-            id,
-            isDeleted: false
+            id
         }
-    });
+    })
 
-    await prisma.$transaction(async (transactionClient) => {
-        //update patient data
-        await transactionClient.patient.update({
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const patientUpdate = await prisma.patient.update({
             where: {
                 id
             },
             data: patientData,
-            include: {
-                patientHealthData: true,
-                medicalReport: true
-            }
-        });
-
-        // create or update patient health data
-        if (patientHealthData) {
-            await transactionClient.patientHealthData.upsert({
-                where: {
-                    patientId: patientInfo.id
-                },
-                update: patientHealthData,
-                create: { ...patientHealthData, patientId: patientInfo.id }
-            });
-        };
-
-        if (medicalReport) {
-            await transactionClient.medicalReport.create({
-                data: { ...medicalReport, patientId: patientInfo.id }
-            })
-        }
+        })
     })
 
 
-    const responseData = await prisma.patient.findUnique({
-        where: {
-            id: patientInfo.id
-        },
-        include: {
-            patientHealthData: true,
-            medicalReport: true
-        }
-    })
-    return responseData;
+    return null
 
 };
 
