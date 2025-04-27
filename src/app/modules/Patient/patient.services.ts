@@ -170,9 +170,11 @@ const deleteFromDB = async (id: string): Promise<Patient | null> => {
                 email: deletedPatient.email
             }
         })
+
+        return deletedPatient
     })
 
-    return null
+    return result
 };
 
 const softDelete = async (id: string): Promise<Patient | null> => {
