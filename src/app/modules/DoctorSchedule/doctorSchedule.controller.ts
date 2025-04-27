@@ -39,10 +39,23 @@ const getMySchedule = catchAsync(async (req: Request & { user?: IAuthUser }, res
         data: result
     })
 })
+const deleteFromDb = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+
+    const result = await doctorScheduleService.deleteFromDb()
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Schedule delete successfully",
+        data: result
+    })
+})
 
 
 
 export const doctorScheduleController = {
     insertIntoDb,
-    getMySchedule
+    getMySchedule,
+    deleteFromDb
 }

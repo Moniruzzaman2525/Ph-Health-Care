@@ -100,8 +100,12 @@ const getMySchedule = async (params: any, options: IPaginationOptions, user: IAu
     }
 }
 
+const deleteFromDb = async () => {
+
+}
 
 export const doctorScheduleService = {
     insertIntoDb,
-    getMySchedule
+    getMySchedule,
+    deleteFromDb
 }
