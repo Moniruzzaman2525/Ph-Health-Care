@@ -31,19 +31,23 @@ const getMySchedule = async (params: any, options: IPaginationOptions, user: IAu
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
     const { startDate, endDate, ...filterData } = params
 
-    const andConditions: Prisma.ScheduleWhereInput[] = []
+    const andConditions: Prisma.DoctorSchedulesWhereInput[] = []
 
     if (startDate && endDate) {
         andConditions.push({
             AND: [
                 {
-                    startDateTime: {
-                        gte: startDate
-                    }
+                    schedule: {
+                        startDateTime: {
+                            gte: startDate
+                        }
+                    },
                 },
                 {
-                    endDateTime: {
-                        lte: endDate
+                    schedule: {
+                        endDateTime: {
+                            lte: endDate
+                        }
                     }
                 }
             ]
@@ -60,36 +64,17 @@ const getMySchedule = async (params: any, options: IPaginationOptions, user: IAu
         })
     }
 
-    const whereConditions: Prisma.ScheduleWhereInput = { AND: andConditions }
-
-    const doctorSchedule = await prisma.doctorSchedules.findMany({
-        where: {
-            doctor: {
-                email: user?.email
-            }
-        }
-    })
-    const doctorScheduleIds = doctorSchedule.map((schedule) => schedule.scheduleId)
+    const whereConditions: Prisma.DoctorSchedulesWhereInput = { AND: andConditions }
 
 
-    const result = await prisma.schedule.findMany({
-        where: {
-            ...whereConditions,
-            id: {
-                notIn: doctorScheduleIds
-            }
-        },
+    const result = await prisma.doctorSchedules.findMany({
+        where: whereConditions,
         skip,
         take: limit,
-        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' }
+        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : {}
     })
     const total = await prisma.schedule.count({
-        where: {
-            ...whereConditions,
-            id: {
-                notIn: doctorScheduleIds
-            }
-        }
+        where: whereConditions,
     })
     return {
         meta: {
