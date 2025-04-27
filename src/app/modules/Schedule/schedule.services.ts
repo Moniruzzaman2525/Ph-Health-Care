@@ -4,7 +4,7 @@ import { Schedule } from "@prisma/client"
 import { ISchedule } from "./schedule.interface"
 
 
-const insertIntoDb = async (payload: ISchedule) : Promise<Schedule[]> => {
+const insertIntoDb = async (payload: ISchedule): Promise<Schedule[]> => {
 
     const { startDate, endDate, startTime, endTime } = payload
     const interValTime = 30
