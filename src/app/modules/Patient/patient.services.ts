@@ -92,7 +92,8 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
 
     const patientInfo = await prisma.patient.findFirstOrThrow({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     })
 
@@ -158,7 +159,7 @@ const deleteFromDB = async (id: string): Promise<Patient | null> => {
         })
 
         // delete patient
-        const deletedPatient =  await tx.patient.delete({
+        const deletedPatient = await tx.patient.delete({
             where: {
                 id
             }
