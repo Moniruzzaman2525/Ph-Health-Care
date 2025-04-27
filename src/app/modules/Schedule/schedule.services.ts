@@ -108,14 +108,28 @@ const getFromAllDb = async (params: any, options: IPaginationOptions, user: IAut
             }
         }
     })
+    const doctorScheduleIds = doctorSchedule.map((schedule) => schedule.scheduleId)
+
 
     const result = await prisma.schedule.findMany({
-        where: whereConditions,
+        where: {
+            ...whereConditions,
+            id: {
+                notIn: doctorScheduleIds
+            }
+        },
         skip,
         take: limit,
         orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' }
     })
-    const total = await prisma.schedule.count({ where: whereConditions })
+    const total = await prisma.schedule.count({
+        where: {
+            ...whereConditions,
+            id: {
+                notIn: doctorScheduleIds
+            }
+        }
+    })
     return {
         meta: {
             page,
