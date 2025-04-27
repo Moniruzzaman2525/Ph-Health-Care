@@ -110,13 +110,12 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
 
         // create or update patient health data
         if (patientHealthData) {
-            const healthData = await transactionClient.patient.update({
+            await transactionClient.patientHealthData.upsert({
                 where: {
-                    id
+                    patientId: patientInfo.id
                 },
-                data: {
-
-                }
+                update: patientHealthData,
+                create: { ...patientHealthData, patientId: patientInfo.id }
             })
         }
     })
