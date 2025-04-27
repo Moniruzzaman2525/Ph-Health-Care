@@ -4,13 +4,23 @@ import prisma from "../../../helpers/prisma"
 const insertIntoDb = async (user: any, payload: {
     scheduleIds: string[]
 }) => {
-    const doctor = await prisma.doctor.findUnique({
+    const doctorData = await prisma.doctor.findUniqueOrThrow({
         where: {
             email: user.email
         }
     })
 
-    console.log(payload.scheduleIds)
+    const doctorScheduleData = payload.scheduleIds.map(scheduleId => ({
+        doctorId: doctorData.id,
+        scheduleId
+    }))
+
+
+    const result = await prisma.doctorSchedules.createMany({
+        data: doctorScheduleData
+    });
+
+    return result
 }
 
 export const doctorScheduleService = {
