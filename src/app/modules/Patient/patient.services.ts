@@ -97,12 +97,28 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
     })
 
     const result = await prisma.$transaction(async (transactionClient) => {
-        const patientUpdate = await prisma.patient.update({
+        const patientUpdate = await transactionClient.patient.update({
             where: {
                 id
             },
             data: patientData,
+            include: {
+                medicalReport: true,
+                patientHealthData: true
+            }
         })
+
+        // create or update patient health data
+        if (patientHealthData) {
+            const healthData = await transactionClient.patient.update({
+                where: {
+                    id
+                },
+                data: {
+
+                }
+            })
+        }
     })
 
 
