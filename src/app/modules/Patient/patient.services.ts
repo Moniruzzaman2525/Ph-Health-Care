@@ -97,7 +97,7 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
     })
 
     await prisma.$transaction(async (transactionClient) => {
-        const patientUpdate = await transactionClient.patient.update({
+        await transactionClient.patient.update({
             where: {
                 id
             },
@@ -108,7 +108,6 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
             }
         })
 
-        // create or update patient health data
         if (patientHealthData) {
             await transactionClient.patientHealthData.upsert({
                 where: {
@@ -119,7 +118,7 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
             })
         }
         if (medicalReport) {
-            const report = await transactionClient.medicalReport.create({
+            await transactionClient.medicalReport.create({
                 data: { ...medicalReport, patientId: patientInfo.id }
             })
         }
@@ -141,37 +140,9 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
 
 
 const deleteFromDB = async (id: string): Promise<Patient | null> => {
-    const result = await prisma.$transaction(async (tx) => {
-        // delete medical report
-        await tx.medicalReport.deleteMany({
-            where: {
-                patientId: id
-            }
-        });
 
-        // delete patient health data
-        await tx.patientHealthData.delete({
-            where: {
-                patientId: id
-            }
-        });
 
-        const deletedPatient = await tx.patient.delete({
-            where: {
-                id
-            }
-        });
-
-        await tx.user.delete({
-            where: {
-                email: deletedPatient.email
-            }
-        });
-
-        return deletedPatient;
-    });
-
-    return result;
+    return null
 };
 
 const softDelete = async (id: string): Promise<Patient | null> => {
