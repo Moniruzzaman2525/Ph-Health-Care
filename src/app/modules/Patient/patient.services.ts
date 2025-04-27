@@ -141,6 +141,15 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
 
 const deleteFromDB = async (id: string): Promise<Patient | null> => {
 
+    const result = await prisma.$transaction(async (tx) => {
+
+        // delete medical report
+        await tx.medicalReport.deleteMany({
+            where: {
+                patientId: id
+            }
+        })
+    })
 
     return null
 };
