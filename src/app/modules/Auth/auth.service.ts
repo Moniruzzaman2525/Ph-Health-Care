@@ -24,20 +24,18 @@ const loginUser = async (payload: {
         throw new Error("Invalid password")
     }
 
-    const expire_in = Number(config.jwt.expires_in);
     const accessToken = jwtHelpers.generateToken({
         email: userData.email,
         role: userData.role,
         id: userData.id
-    }, config.jwt.jwt_secret as Secret, expire_in)
+    }, config.jwt.jwt_secret as Secret, config.jwt.expires_in as string)
 
-    const refresh_token_expires_in = Number(config.jwt.refresh_token_expires_in)
 
     const refreshToken = jwtHelpers.generateToken({
         email: userData.email,
         role: userData.role,
         id: userData.id
-    }, config.jwt.refresh_token_secret as Secret, refresh_token_expires_in)
+    }, config.jwt.refresh_token_secret as Secret, config.jwt.refresh_token_expires_in as string)
 
     return {
         accessToken,
@@ -56,12 +54,12 @@ const refreshToken = async (token: string) => {
                 email: decodedData.email
             }
         })
-        const expire_in = Number(config.jwt.expires_in);
+
         const accessToken = jwtHelpers.generateToken({
             email: userData.email,
             role: userData.role,
             id: userData.id
-        }, config.jwt.jwt_secret as Secret, expire_in)
+        }, config.jwt.jwt_secret as Secret, config.jwt.expires_in as string)
         return {
             accessToken,
             needPasswordChange: userData.needPasswordChange
@@ -109,7 +107,7 @@ const forgotPassword = async (payload: {email: string}) => {
             status: UserStatus.ACTIVE
         }
     })
-    const resetPasswordExpireIn = Number(config.jwt.reset_password_token_expire_in)
+    const resetPasswordExpireIn = (config.jwt.reset_password_token_expire_in) as string
     const resetPassToken = jwtHelpers.generateToken({ email: userData.email, role: userData.role }, config.jwt.reset_password_secret as Secret, resetPasswordExpireIn)
     const resetPasswordLink = config.jwt.reset_password_link + `?id=${userData.id}&token=${resetPassToken}`
     await emailSender(

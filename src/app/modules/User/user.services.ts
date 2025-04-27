@@ -44,7 +44,7 @@ const createDoctor = async (req: Request): Promise<Doctor> => {
     const file = req.file as IFile | undefined
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file)
-        req.body.data.doctor.profilePhoto = uploadToCloudinary?.secure_url
+        req.body.doctor.profilePhoto = uploadToCloudinary?.secure_url
     }
 
     const hashPassword: string = await bcrypt.hash(req.body.password, 12)
@@ -72,7 +72,7 @@ const createPatient = async (req: Request): Promise<Patient> => {
     const file = req.file as IFile | undefined
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file)
-        req.body.data.patient.profilePhoto = uploadToCloudinary?.secure_url
+        req.body.patient.profilePhoto = uploadToCloudinary?.secure_url
     }
 
     const hashPassword: string = await bcrypt.hash(req.body.password, 12)

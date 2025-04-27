@@ -90,27 +90,25 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
 
     const { patientHealthData, medicalReport, ...patientData } = payload;
 
-    const patientInfo = await prisma.patient.findUniqueOrThrow({
+    const patientInfo = await prisma.patient.findFirstOrThrow({
         where: {
             id,
             isDeleted: false
         }
-    });
+    })
 
     await prisma.$transaction(async (transactionClient) => {
-        //update patient data
         await transactionClient.patient.update({
             where: {
                 id
             },
             data: patientData,
             include: {
-                patientHealthData: true,
-                medicalReport: true
+                medicalReport: true,
+                patientHealthData: true
             }
-        });
+        })
 
-        // create or update patient health data
         if (patientHealthData) {
             await transactionClient.patientHealthData.upsert({
                 where: {
@@ -118,16 +116,14 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
                 },
                 update: patientHealthData,
                 create: { ...patientHealthData, patientId: patientInfo.id }
-            });
-        };
-
+            })
+        }
         if (medicalReport) {
             await transactionClient.medicalReport.create({
                 data: { ...medicalReport, patientId: patientInfo.id }
             })
         }
     })
-
 
     const responseData = await prisma.patient.findUnique({
         where: {
@@ -138,43 +134,48 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
             medicalReport: true
         }
     })
-    return responseData;
+
+    return responseData
 
 };
 
 
 const deleteFromDB = async (id: string): Promise<Patient | null> => {
+
     const result = await prisma.$transaction(async (tx) => {
+
         // delete medical report
         await tx.medicalReport.deleteMany({
             where: {
                 patientId: id
             }
-        });
+        })
 
         // delete patient health data
         await tx.patientHealthData.delete({
             where: {
                 patientId: id
             }
-        });
+        })
 
+        // delete patient
         const deletedPatient = await tx.patient.delete({
             where: {
                 id
             }
-        });
+        })
 
+        // delete user
         await tx.user.delete({
             where: {
                 email: deletedPatient.email
             }
-        });
+        })
 
-        return deletedPatient;
-    });
+        return deletedPatient
+    })
 
-    return result;
+    return result
 };
 
 const softDelete = async (id: string): Promise<Patient | null> => {
