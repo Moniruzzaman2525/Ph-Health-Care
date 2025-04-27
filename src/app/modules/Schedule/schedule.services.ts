@@ -1,7 +1,7 @@
 import { addHours, addMinutes, format } from "date-fns"
 import prisma from "../../../helpers/prisma"
 import { Prisma, Schedule } from "@prisma/client"
-import { ISchedule } from "./schedule.interface"
+import { IFilterRequest, ISchedule } from "./schedule.interface"
 import { IPaginationOptions } from "../../interfaces/pagination"
 import { paginationHelper } from "../../../helpers/paginationHelper"
 import { IAuthUser } from "../../interfaces/common"
@@ -66,7 +66,7 @@ const insertIntoDb = async (payload: ISchedule): Promise<Schedule[]> => {
     return schedules
 }
 
-const getFromAllDb = async (params: any, options: IPaginationOptions, user: IAuthUser) => {
+const getFromAllDb = async (params: IFilterRequest, options: IPaginationOptions, user: IAuthUser) => {
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
     const { startDate, endDate, ...filterData } = params
 
