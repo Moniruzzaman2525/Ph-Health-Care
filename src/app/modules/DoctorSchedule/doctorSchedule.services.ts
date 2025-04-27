@@ -55,25 +55,39 @@ const getMySchedule = async (params: any, options: IPaginationOptions, user: IAu
     }
 
     if (Object.keys(filterData).length > 0) {
+
+        if (typeof filterData.isBooked === 'string' && filterData.isBooked === 'true') {
+            filterData.isBooked = true
+        }
+        else if (typeof filterData.isBooked === 'string' && filterData.isBooked === 'false') {
+            filterData.isBooked = false
+        }
         andConditions.push({
-            AND: Object.keys(filterData).map(key => ({
-                [key]: {
-                    equals: (filterData as any)[key]
-                }
-            }))
-        })
+            AND: Object.keys(filterData).map(key => {
+                return {
+                    [key]: {
+                        equals: (filterData as any)[key],
+                    },
+                };
+            }),
+        });
     }
 
-    const whereConditions: Prisma.DoctorSchedulesWhereInput = { AND: andConditions }
+    const whereConditions: Prisma.DoctorSchedulesWhereInput = andConditions.length > 0 ? { AND: andConditions } : {}
 
 
     const result = await prisma.doctorSchedules.findMany({
         where: whereConditions,
         skip,
         take: limit,
-        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : {}
+        orderBy:
+            options.sortBy && options.sortOrder
+                ? { [options.sortBy]: options.sortOrder }
+                : {
+
+                }
     })
-    const total = await prisma.schedule.count({
+    const total = await prisma.doctorSchedules.count({
         where: whereConditions,
     })
     return {

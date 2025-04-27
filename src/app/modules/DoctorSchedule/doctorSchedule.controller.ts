@@ -26,7 +26,7 @@ const insertIntoDb = catchAsync(async (req: Request & { user?: IAuthUser }, res:
 
 const getMySchedule = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response, next: NextFunction) => {
 
-    const filters = pick(req.query, ['startDate', 'endDate'])
+    const filters = pick(req.query, ['startDate', 'endDate', 'isBooked'])
 
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
     const user = req.user
