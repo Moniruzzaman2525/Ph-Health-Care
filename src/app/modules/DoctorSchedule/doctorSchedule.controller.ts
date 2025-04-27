@@ -22,8 +22,22 @@ const insertIntoDb = catchAsync(async (req: Request & {user?: IAuthUser}, res: R
     })
 })
 
+const getFromAllDb = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const result = await doctorScheduleService.getFromAllDb()
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Doctor schedule created successfully",
+        data: result
+    })
+})
+
+
 
 
 export const doctorScheduleController = {
-    insertIntoDb
+    insertIntoDb,
+    getFromAllDb
 }
