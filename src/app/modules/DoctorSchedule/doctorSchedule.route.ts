@@ -1,6 +1,6 @@
 
 import express from 'express'
-import { doctorScheduleController } from './dcotorSchedule.controller'
+import { doctorScheduleController } from './doctorSchedule.controller'
 import auth from '../../middlewares/auth'
 import { UserRole } from '@prisma/client'
 
