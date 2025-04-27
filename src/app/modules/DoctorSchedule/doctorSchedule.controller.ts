@@ -24,10 +24,25 @@ const insertIntoDb = catchAsync(async (req: Request & { user?: IAuthUser }, res:
 })
 
 
+const getMySchedule = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response, next: NextFunction) => {
 
+    const filters = pick(req.query, ['startDate', 'endDate'])
+
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
+    const user = req.user
+    const result = await doctorScheduleService.getMySchedule(filters, options, user as IAuthUser)
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Schedule fetch successfully",
+        data: result
+    })
+})
 
 
 
 export const doctorScheduleController = {
     insertIntoDb,
+    getMySchedule
 }
