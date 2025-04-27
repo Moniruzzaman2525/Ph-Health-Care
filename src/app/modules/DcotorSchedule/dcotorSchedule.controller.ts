@@ -8,10 +8,10 @@ import { doctorScheduleService } from "./dcotorSchedule.services";
 
 
 
-const insertIntoDb = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const insertIntoDb = catchAsync(async (req: Request & {user?: any}, res: Response, next: NextFunction) => {
     const user = req.user
 
-    const result = await doctorScheduleService.insertIntoDb(user)
+    const result = await doctorScheduleService.insertIntoDb(user, req.body)
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
