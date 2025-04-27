@@ -23,24 +23,11 @@ const insertIntoDb = catchAsync(async (req: Request & { user?: IAuthUser }, res:
     })
 })
 
-const getFromAllDb = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const filters = pick(req.query, ['startDateTime', 'endDateTime'])
-    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
-    const result = await doctorScheduleService.getFromAllDb(filters, options)
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Schedule fetch successfully",
-        data: result
-    })
-})
 
 
 
 
 export const doctorScheduleController = {
     insertIntoDb,
-    getFromAllDb
 }

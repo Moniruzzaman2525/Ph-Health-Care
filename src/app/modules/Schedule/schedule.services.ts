@@ -1,7 +1,9 @@
 import { addHours, addMinutes, format } from "date-fns"
 import prisma from "../../../helpers/prisma"
-import { Schedule } from "@prisma/client"
+import { Prisma, Schedule } from "@prisma/client"
 import { ISchedule } from "./schedule.interface"
+import { IPaginationOptions } from "../../interfaces/pagination"
+import { paginationHelper } from "../../../helpers/paginationHelper"
 
 
 const insertIntoDb = async (payload: ISchedule): Promise<Schedule[]> => {
@@ -63,6 +65,58 @@ const insertIntoDb = async (payload: ISchedule): Promise<Schedule[]> => {
     return schedules
 }
 
+const getFromAllDb = async (params: any, options: IPaginationOptions) => {
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
+    const { startDate, endDate, ...filterData } = params
+
+    const andConditions: Prisma.ScheduleWhereInput[] = []
+
+    if (startDate && endDate) {
+        andConditions.push({
+            AND: [
+                {
+                    startDateTime: {
+                        gte: startDate
+                    }
+                },
+                {
+                    endDateTime: {
+                        lte: endDate
+                    }
+                }
+            ]
+        })
+    }
+
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: (filterData as any)[key]
+                }
+            }))
+        })
+    }
+
+    const whereConditions: Prisma.ScheduleWhereInput = { AND: andConditions }
+
+    const result = await prisma.schedule.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' }
+    })
+    const total = await prisma.schedule.count({ where: whereConditions })
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: result
+    }
+}
 export const scheduleServices = {
-    insertIntoDb
+    insertIntoDb,
+    getFromAllDb
 }
