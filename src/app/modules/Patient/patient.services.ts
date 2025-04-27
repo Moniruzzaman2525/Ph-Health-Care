@@ -158,9 +158,16 @@ const deleteFromDB = async (id: string): Promise<Patient | null> => {
         })
 
         // delete patient
-        await tx.patient.delete({
+        const deletedPatient =  await tx.patient.delete({
             where: {
                 id
+            }
+        })
+
+        // delete user
+        await tx.user.delete({
+            where: {
+                email: deletedPatient.email
             }
         })
     })
