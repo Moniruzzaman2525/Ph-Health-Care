@@ -1,8 +1,10 @@
 import { addHours, addMinutes, format } from "date-fns"
 import prisma from "../../../helpers/prisma"
+import { Schedule } from "@prisma/client"
+import { ISchedule } from "./schedule.interface"
 
 
-const insertIntoDb = async (payload: any) => {
+const insertIntoDb = async (payload: ISchedule) : Promise<Schedule[]> => {
 
     const { startDate, endDate, startTime, endTime } = payload
     const interValTime = 30
