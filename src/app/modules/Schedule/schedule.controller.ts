@@ -4,6 +4,7 @@ import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { scheduleServices } from "./schedule.services";
 import { pick } from "../../../shared/pick";
+import { IAuthUser } from "../../interfaces/common";
 
 
 
@@ -18,12 +19,13 @@ const insertIntoDb = catchAsync(async (req: Request, res: Response, next: NextFu
     })
 })
 
-const getFromAllDb = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const getFromAllDb = catchAsync(async (req: Request & {user?: IAuthUser}, res: Response, next: NextFunction) => {
 
     const filters = pick(req.query, ['startDate', 'endDate'])
 
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
-    const result = await scheduleServices.getFromAllDb(filters, options)
+    const user = req.user
+    const result = await scheduleServices.getFromAllDb(filters, options, user as IAuthUser)
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
