@@ -6,10 +6,11 @@ import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { IAuthUser } from "../../interfaces/common";
 import { doctorScheduleService } from "./doctorSchedule.services";
+import { pick } from "../../../shared/pick";
 
 
 
-const insertIntoDb = catchAsync(async (req: Request & {user?: IAuthUser}, res: Response, next: NextFunction) => {
+const insertIntoDb = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response, next: NextFunction) => {
     const user = req.user
 
     const result = await doctorScheduleService.insertIntoDb(user, req.body)
@@ -24,12 +25,14 @@ const insertIntoDb = catchAsync(async (req: Request & {user?: IAuthUser}, res: R
 
 const getFromAllDb = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const result = await doctorScheduleService.getFromAllDb()
+    const filters = pick(req.query, ['startDateTime', 'endDateTime'])
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
+    const result = await doctorScheduleService.getFromAllDb(filters, options)
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Doctor schedule created successfully",
+        message: "Schedule fetch successfully",
         data: result
     })
 })
