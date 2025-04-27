@@ -100,8 +100,30 @@ const getMySchedule = async (params: any, options: IPaginationOptions, user: IAu
     }
 }
 
-const deleteFromDb = async () => {
+const deleteFromDb = async (scheduleId: string, user: IAuthUser) => {
 
+    const doctor = await prisma.doctor.findUniqueOrThrow({
+        where: {
+            email: user?.email
+        }
+    })
+
+    await prisma.doctorSchedules.findFirstOrThrow({
+        where: {
+            doctorId: doctor.id,
+            scheduleId: scheduleId
+        }
+    })
+
+    const result = await prisma.doctorSchedules.delete({
+        where: {
+            doctorId_scheduleId: {
+                doctorId: doctor.id,
+                scheduleId: scheduleId
+            }
+        }
+    })
+    return result
 }
 
 export const doctorScheduleService = {

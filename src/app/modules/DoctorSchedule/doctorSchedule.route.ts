@@ -9,7 +9,7 @@ const router = express.Router()
 
 router.get('/my-schedule', auth(UserRole.DOCTOR), doctorScheduleController.getMySchedule)
 router.post('/', auth(UserRole.DOCTOR), doctorScheduleController.insertIntoDb)
-
+router.delete('/:id',auth(UserRole.DOCTOR), doctorScheduleController.deleteFromDb)
 
 
 export const DoctorScheduleRoutes = router
