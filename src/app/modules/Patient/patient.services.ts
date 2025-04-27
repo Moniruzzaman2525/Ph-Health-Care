@@ -120,7 +120,7 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
         }
         if (medicalReport) {
             const report = await transactionClient.medicalReport.create({
-                data: {...medicalReport, patientId: patientInfo.id}
+                data: { ...medicalReport, patientId: patientInfo.id }
             })
         }
     })
@@ -128,6 +128,10 @@ const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promi
     const responseData = await prisma.patient.findUnique({
         where: {
             id: patientInfo.id
+        },
+        include: {
+            patientHealthData: true,
+            medicalReport: true
         }
     })
 
