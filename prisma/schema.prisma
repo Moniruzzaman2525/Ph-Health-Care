@@ -184,8 +184,8 @@ model Appointment {
   schedule   Schedule @relation(fields: [scheduleId], references: [id])
 
   videoCallingId String
-  status         AppointmentStatus
-  payment        PaymentStatus
+  status         AppointmentStatus @default(SCHEDULED)
+  payment        PaymentStatus     @default(UNPAID)
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
