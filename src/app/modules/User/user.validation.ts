@@ -1,6 +1,5 @@
 import { Gender } from "@prisma/client";
 import { z } from "zod";
-import app from "../../../app";
 
 const createAdmin = z.object({
     password: z.string({
