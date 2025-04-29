@@ -2,7 +2,9 @@ import prisma from "../../../helpers/prisma"
 import { IAuthUser } from "../../interfaces/common"
 
 
-const createAppointment = async (user: IAuthUser) => {
+const createAppointment = async (user: IAuthUser, payload: any) => {
+
+    console.log(payload)
     const patientData = await prisma.patient.findFirstOrThrow({
         where: {
             email: user?.email

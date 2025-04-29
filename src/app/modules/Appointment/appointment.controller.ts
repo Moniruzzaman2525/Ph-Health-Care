@@ -11,7 +11,7 @@ const createAppointment = catchAsync(async (req: Request & {user?: IAuthUser}, r
 
     const user = req.user
 
-    const result = await AppointmentServices.createAppointment(user as IAuthUser)
+    const result = await AppointmentServices.createAppointment(user as IAuthUser, req.body)
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
