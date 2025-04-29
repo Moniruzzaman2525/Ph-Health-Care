@@ -180,7 +180,7 @@ model Appointment {
   doctorId String
   doctor   Doctor @relation(fields: [doctorId], references: [id])
 
-  scheduleId String
+  scheduleId String   @unique
   schedule   Schedule @relation(fields: [scheduleId], references: [id])
 
   videoCallingId String

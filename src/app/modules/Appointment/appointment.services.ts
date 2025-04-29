@@ -32,6 +32,11 @@ const createAppointment = async (user: IAuthUser, payload: any) => {
             doctorId: doctorData.id,
             scheduleId: payload.scheduleId,
             videoCallingId: videoCallingId
+        },
+        include: {
+            patient: true,
+            doctor: true,
+            schedule: true
         }
     })
     return result
